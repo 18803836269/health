@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/mvc
+						http://www.springframework.org/schema/mvc/spring-mvc.xsd
+						http://code.alibabatech.com/schema/dubbo
+						http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+						http://www.springframework.org/schema/context
+						http://www.springframework.org/schema/context/spring-context.xsd
+                          http://www.springframework.org/schema/security
+                          http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!--配置不需要授权的资源和页面-->
+    <security:http pattern="/login.html" security="none"/>
+    <security:http pattern="/error.html" security="none"/>
+
+    <!--
+        auto-config="true" 配置一个登录页面&配置一系列的默认过滤器
+        use-expression="true" 使用表达式
+        hasRole=拥有一个角色
+        hasAuthority=拥有权限
+    -->
+    <security:http auto-config="true" use-expressions="true">
+        <security:intercept-url pattern="/add.html" access="hasAuthority('add')"/>
+        <security:intercept-url pattern="/*" access="hasRole('ROLE_admin')"/>
+
+
+        <!--
+            配置自定义登录页面
+                login-page=指定登录页面
+                username-parameter=登录页面form表单用户输入的用户名
+                password-parameter=登录页面form表单用户输入的密码
+                login-processing-url=处理登录的controller
+                default-target-url=登录成功跳转的地址
+                authentication-failure-url=登录失败的跳转地址
+        -->
+        <security:form-login login-page="login.html"
+                             username-parameter="myusername"
+                             password-parameter="mypwd"
+                             login-processing-url="/mylogin.do"
+                             default-target-url="index.html"
+                             authentication-failure-url="login.html"/>
+
+        <!--禁用csrf-->
+        <security:csrf disabled="true"/>
+
+        <!--
+            配置登出
+            logout-url="/logout.do" 配置登出处理controller
+            logout-success-url 退出成功跳转的页面
+            invalidate-session=销毁登录session信息
+        -->
+        <security:logout logout-url="/logout.do"
+                         logout-success-url="/login.html"
+                         invalidate-session="true"/>
+
+        <!--配置没有权限访问的页面-->
+        <security:access-denied-handler error-page="/error.html"/>
+
+    </security:http>
+
+    <!--认证管理器-->
+    <security:authentication-manager>
+        <!--认证提供者-->
+        <security:authentication-provider>
+            <security:user-service>
+                <!--
+                    {noop} 标识明文密码
+                    ROLE_ 角色的前缀
+                -->
+                <security:user name="admin" password="{noop}admin" authorities="ROLE_admin"/>
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+</beans>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/mvc
+                            http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                            http://code.alibabatech.com/schema/dubbo
+                            http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+                            http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--配置应用名称-->
+    <dubbo:application name="health_service"/>
+    <!--配置注册中心-->
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+    <!--dubbo端口&协议-->
+    <dubbo:protocol name="dubbo" port="20880"/>
+    <!--dubbo包扫描-->
+    <dubbo:annotation package="pdsu.service"/>
+
+    <import resource="spring-redis.xml"/>
+
+    <!--
+    配置应用名称
+    <dubbo:application name="health_service"/>
+    配置注册中心
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+    dubbo端口协议
+    <dubbo:protocol name="dubbo" port="20880"/>
+    扫描的方式暴露接口方法1
+    <dubbo:annotation package-"pdsu.service"/>
+    方法2：声明需要暴露的服务接口（provider）
+    <dubbo:service interface="pdsu.service.HelloService" ref="helloService"/> 只能发布一个服务
+    引用远程服务代理，可以和本地bean一样使用helloService
+    <dubbo:reference id="helloService" interface="cn.itcast.dubbo.service.HelloService"/>
+    -->
+</beans>

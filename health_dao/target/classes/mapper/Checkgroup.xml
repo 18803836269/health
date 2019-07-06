@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="pdsu.dao.CheckgroupDao">
+
+    <!--useGeneratedKeys="true" keyProperty="id"的作用是让主键回显-->
+    <insert id="add" parameterType="pdsu.pojo.CheckGroup" useGeneratedKeys="true" keyProperty="id">
+        insert into t_checkgroup(code,name,sex,helpCode,remark,attention)
+            values
+      	(#{code},#{name},#{sex},#{helpCode},#{remark},#{attention})
+    </insert>
+
+    <insert id="setCheckGroupAndCheckItem">
+        insert into t_checkgroup_checkitem(checkgroup_id,checkitem_id)
+      		values
+      	(#{checkGroupId},#{checkitemId})
+    </insert>
+
+    <select id="findPage" resultType="pdsu.pojo.CheckGroup" parameterType="string">
+        select * from t_checkgroup
+        <if test="queryString != null and queryString.length > 0">
+            where code = #{queryString} or name = #{queryString} or helpCode = #{queryString}
+        </if>
+    </select>
+
+    <select id="findById" resultType="pdsu.pojo.CheckGroup" parameterType="integer">
+        select * from t_checkgroup where id = #{id}
+    </select>
+
+    <select id="findCheckItemIdsByCheckGroupId" resultType="java.lang.Integer">
+        select checkitem_id from t_checkgroup_checkitem where checkgroup_id = #{checkGroupId}
+    </select>
+
+    <update id="edit" parameterType="pdsu.pojo.CheckGroup">
+        update t_checkgroup
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="helpCode != null">
+                helpCode = #{helpCode},
+            </if>
+            <if test="attention != null">
+                attention = #{attention},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAssociation">
+        delete from t_checkgroup_checkitem where checkgroup_id = #{checkGroupId}
+    </delete>
+
+    <select id="findAll" resultType="pdsu.pojo.CheckItem">
+        select * from t_checkgroup
+    </select>
+</mapper>

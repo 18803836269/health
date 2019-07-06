@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="pdsu.dao.SetmealDao">
+
+    <insert id="add" parameterType="pdsu.pojo.Setmeal" useGeneratedKeys="true" keyProperty="id">
+			insert into t_setmeal(code,name,sex,age,helpCode,price,remark,attention,img)
+        			values
+      		(#{code},#{name},#{sex},#{age},#{helpCode},#{price},#{remark},#{attention},#{img})
+    </insert>
+
+    <insert id="setSetmealAndCheckGroup">
+		insert into t_setmeal_checkgroup
+      		(setmeal_id,checkgroup_id)
+      			values
+      		(#{setmealId},#{checkgroupId})
+	</insert>
+
+    <select id="findPage" resultType="pdsu.pojo.Setmeal">
+        select * from t_setmeal
+        <if test="queryString != null and queryString.length > 0">
+            where code = #{queryString} or name = #{queryString} or helpCode = #{queryString}
+        </if>
+    </select>
+
+    <select id="findById" resultType="pdsu.pojo.Setmeal">
+		select * from t_setmeal where id = #{setmealId}
+	</select>
+
+    <select id="getSetmeal" resultType="pdsu.pojo.Setmeal">
+		select * from t_setmeal
+	</select>
+
+    <select id="findCheckGroupBySetmealId" parameterType="integer" resultType="pdsu.pojo.CheckGroup">
+        select * from t_checkgroup where id in (select checkgroup_id from t_setmeal_checkgroup where  setmeal_id  = #{setmealId})
+	</select>
+    <select id="findCheckItemByCheckGroupId" parameterType="integer" resultType="pdsu.pojo.CheckItem">
+        select * from t_checkitem where id in (select checkitem_id from  t_checkgroup_checkitem where checkgroup_id = #{checkGroupId})
+	</select>
+    <select id="findSetmealCount" resultType="java.util.Map">
+		select s.name,count(o.id) as value
+  			from t_order o ,t_setmeal s
+  				where o.setmeal_id = s.id
+  					group by s.name
+	</select>
+
+</mapper>

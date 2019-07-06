@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="pdsu.dao.OrdersettingDao">
+    <insert id="add" parameterType="pdsu.pojo.OrderSetting">
+        insert into t_ordersetting(number,orderDate) values (#{number},#{orderDate})
+    </insert>
+    <update id="edit" parameterType="pdsu.pojo.OrderSetting">
+        update t_ordersetting set number = #{number} where orderDate = #{orderDate}
+    </update>
+
+    <select id="findCountByDate" resultType="java.lang.Integer">
+        select count(*) from t_ordersetting where orderDate = #{orderDate}
+    </select>
+    <select id="getOrderSettingByDate" resultType="pdsu.pojo.OrderSetting">
+        select * from t_ordersetting where orderDate between #{dateStart}  and #{dateEnd}
+    </select>
+    <!--根据日期查询预约设置信息-->
+    <select id="findByOrderDate" parameterType="date" resultType="pdsu.pojo.OrderSetting">
+        select * from t_ordersetting where orderDate = #{orderDate}
+    </select>
+    <update id="editReservationsByOrderDate" parameterType="pdsu.pojo.OrderSetting">
+        update t_ordersetting set reservations = #{reservations},version = version + 1
+        where orderDate = #{orderDate} and version = #{version}
+    </update>
+</mapper>
