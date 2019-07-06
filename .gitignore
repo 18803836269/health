@@ -1,6 +1,7 @@
 #idea
 .idea
-
+.settings
+.project
 # Compiled class file
 *.class
 
